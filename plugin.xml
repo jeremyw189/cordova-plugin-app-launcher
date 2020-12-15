@@ -3,7 +3,7 @@
 		xmlns="http://apache.org/cordova/ns/plugins/1.0"
 		xmlns:android="http://schemas.android.com/apk/res/android"
 		id="cordova-plugin-app-launcher"
-		version="0.4.0">
+		version="0.4.1">
 
 	<name>Launcher</name>
 
@@ -28,8 +28,9 @@
 						<param name="ios-package" value="Launcher" />
 				</feature>
 			</config-file>
-			<header-file src="src/ios/Launcher.h" />
-			<source-file src="src/ios/Launcher.m" />
+			<!--header-file src="src/ios/Launcher.h" />
+			<source-file src="src/ios/Launcher.m" /-->
+			<source-file src="src/ios/Launcher.swift" />
 	</platform>
 
 	<!-- android -->
