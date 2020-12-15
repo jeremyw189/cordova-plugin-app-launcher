@@ -11,6 +11,8 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
@@ -204,7 +206,11 @@ public class Launcher extends CordovaPlugin {
 			}
 			launchAppWithData(packageName, options.getString("uri"), dataType, extras);
 			return true;
-		} else if (options.has("packageName")) {
+		}else if (options.has("packageName") && (options.has("activityName"))) {
+			launchActivity(options.getString("packageName"), options.getString("activityName"), extras);
+			return true;
+		}
+		else if (options.has("packageName")) {
 			launchApp(options.getString("packageName"), extras);
 			return true;
 		} else if (options.has("uri")) {
@@ -397,6 +403,37 @@ public class Launcher extends CordovaPlugin {
 					}
 				} else {
 					callbackContext.error("Activity not found for package name.");
+				}
+			}
+		});
+	}
+
+	private void launchActivity(final String packageName, final String ActivityName,  final Bundle extras) {
+		final CordovaInterface mycordova = cordova;
+		final CordovaPlugin plugin = this;
+		Log.i(TAG, "Trying to launch activity: " + packageName);
+		cordova.getThreadPool().execute(new LauncherRunnable(this.callback) {
+			public void run() {
+				final PackageManager pm = plugin.webView.getContext().getPackageManager();
+				Intent  intent = pm.getLaunchIntentForPackage(packageName);
+				final Intent launchIntent =  new Intent(Intent.ACTION_VIEW);
+				launchIntent.setClassName(plugin.webView.getContext(), ActivityName);
+				ComponentName cn = launchIntent.resolveActivity(pm);
+
+				boolean appNotFound = launchIntent == null;
+
+				if (!appNotFound) {
+					try {
+						launchIntent.putExtras(extras);
+						mycordova.startActivityForResult(plugin, launchIntent, LAUNCH_REQUEST);
+						((Launcher) plugin).callbackLaunched();
+					} catch (ActivityNotFoundException e) {
+						Log.e(TAG, "Error: Activity for package" + packageName + " was not found.");
+						e.printStackTrace();
+						callbackContext.error("Activity not found for package name " + packageName);
+					}
+				} else {
+					callbackContext.error("App not found for package name.");
 				}
 			}
 		});
