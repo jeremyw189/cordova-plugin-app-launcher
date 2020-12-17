@@ -5,9 +5,10 @@
       status: CDVCommandStatus_ERROR
     )
 
-    let msg = command.arguments[0] as? String ?? ""
+    let parms = command.arguments[0] as! NSDictionary
+    let msg = parms.value(forKey: "address") as! String
 
-    if msg.characters.count > 0 {
+    if msg.count > 0 {
       let toastController: UIAlertController =
         UIAlertController(
           title: "",
