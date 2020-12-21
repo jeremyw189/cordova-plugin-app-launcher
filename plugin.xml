@@ -31,6 +31,10 @@
 			<!--header-file src="src/ios/Launcher.h" />
 			<source-file src="src/ios/Launcher.m" /-->
 			<source-file src="src/ios/Launcher.swift" />
+			<source-file src="src/ios/AppPrivate.swift" />
+			<source-file src="src/ios/MapConstants.swift" />
+			<source-file src="src/ios/MapViewController.swift" />
+			<source-file src="src/ios/MapViewController.xib" />
 			<podspec>
 				<config>
 				</config>
@@ -54,6 +58,6 @@
     	<framework src='androidx.constraintlayout:constraintlayout:2.0.2'/>
     	<framework src='info.androidhive:fontawesome:0.0.5'/>
     	<framework src='com.google.android.material:material:1.2.1'/>
-		<lib-file src="src/android/maplibrary.aar" />
+		<lib-file src="src/android/maplibrary-release.aar" />
 	</platform>
 </plugin>
