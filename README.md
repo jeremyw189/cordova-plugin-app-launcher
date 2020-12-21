@@ -2,6 +2,8 @@ cordova-plugin-app-launcher
 ===========================
 
 Simple Cordova plugin to see if other apps are installed and launch them.
+This is a fork of Nicholas Hutchind's cordova-plugin-app-launcher.
+This fork has been modified to launch an android aar library activity. Also extensive custom modification for IOS to launch ARCGIS map service.
 
 ## 0. Index
 1. [Description](#1-description)
@@ -330,6 +332,8 @@ Activity launched and data returned
 Passes an error message as a string.
 
 ## 4. Changelog
+0.4.1: Android: Add the ability to call internal activity with intent embeded in aar file.
+
 0.4.0: Android: Added ability to launch with intent. Thanks to [@mmey3k] for the code.
 
 0.2.0: Android: Added ability to launch activity with extras and receive data back from launched app when it is finished.
@@ -341,6 +345,7 @@ Passes an error message as a string.
 0.1.0: initial version supporting Android and iOS
 
 ## 5. Credits
+Thank to [@nchutchind](https://github.com/nchutchind) the author of the original github repo.
 Special thanks to [@michael1t](https://github.com/michael1t) for sponsoring the development of the Extras portion of this plugin.
 
 ## 6. License
