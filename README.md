@@ -1,9 +1,9 @@
-cordova-plugin-app-launcher
+cordova-plugin-map-launcher
 ===========================
 
 Simple Cordova plugin to see if other apps are installed and launch them.
 This is a fork of Nicholas Hutchind's cordova-plugin-app-launcher.
-This fork has been modified to launch an android aar library activity. Also extensive custom modification for IOS to launch ARCGIS map service.
+This fork has been greatly modified to launch an android aar library activity. Also extensive custom modification for IOS to launch ARCGIS map service.
 
 ## 0. Index
 1. [Description](#1-description)
