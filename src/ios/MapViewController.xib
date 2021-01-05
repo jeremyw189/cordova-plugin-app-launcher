@@ -13,7 +13,8 @@
             <connections>
                 <outlet property="infoLabel" destination="yfm-Wm-Xt4" id="EI6-sO-xgy"/>
                 <outlet property="mapView" destination="g8t-fd-B4Z" id="M9s-eg-noA"/>
-                <outlet property="navBar" destination="3fx-Zj-Dny" id="EYS-9m-mra"/>
+                <outlet property="navBar" destination="vMZ-wj-F6j" id="9Is-9T-HVH"/>
+                <outlet property="navigateButtonBarItem" destination="gMe-o1-sH3" id="2Cf-7s-Yay"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -23,35 +24,52 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="cMg-Cq-At2">
-                    <rect key="frame" x="0.0" y="44" width="414" height="857"/>
+                    <rect key="frame" x="0.0" y="44" width="414" height="832"/>
                     <subviews>
                         <navigationBar contentMode="scaleToFill" id="3fx-Zj-Dny">
                             <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <items>
                                 <navigationItem title="Title" id="vMZ-wj-F6j"/>
                             </items>
                         </navigationBar>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yfm-Wm-Xt4">
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yfm-Wm-Xt4">
                             <rect key="frame" x="0.0" y="44" width="414" height="20.5"/>
                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <view contentMode="scaleToFill" id="g8t-fd-B4Z" customClass="AGSMapView">
-                            <rect key="frame" x="0.0" y="64.5" width="414" height="748.5"/>
+                            <rect key="frame" x="0.0" y="64.5" width="414" height="723.5"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         </view>
                         <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dR0-JH-hcG">
-                            <rect key="frame" x="0.0" y="813" width="414" height="44"/>
+                            <rect key="frame" x="0.0" y="788" width="414" height="44"/>
                             <items>
-                                <barButtonItem title="Close" image="chevron.backward" catalog="system" id="gMe-o1-sH3" userLabel="Close">
+                                <barButtonItem title="Close" image="location.fill" catalog="system" id="gMe-o1-sH3" userLabel="Navigate">
                                     <connections>
                                         <action selector="closeBtn:" destination="-1" id="Pjo-og-L2q"/>
                                     </connections>
                                 </barButtonItem>
-                                <barButtonItem title="Item" id="ySY-1u-5cs"/>
+                                <barButtonItem style="plain" systemItem="flexibleSpace" id="9fh-xj-Vxp"/>
+                                <barButtonItem title="center" image="rectangle.center.inset.fill" catalog="system" id="ySY-1u-5cs">
+                                    <connections>
+                                        <action selector="recenter:" destination="-1" id="f6L-V5-lde"/>
+                                    </connections>
+                                </barButtonItem>
+                                <barButtonItem style="plain" systemItem="flexibleSpace" id="YFK-jZ-5bP"/>
+                                <barButtonItem title="directions" image="list.dash" catalog="system" id="PIQ-7j-JNs">
+                                    <connections>
+                                        <action selector="directions:" destination="-1" id="wto-Co-8SX"/>
+                                    </connections>
+                                </barButtonItem>
+                                <barButtonItem style="plain" systemItem="flexibleSpace" id="g4F-XE-BQH"/>
+                                <barButtonItem title="stop" image="stop.circle.fill" catalog="system" id="vb1-0p-5RE">
+                                    <connections>
+                                        <action selector="stopNavigation:" destination="-1" id="sJj-sm-Mj9"/>
+                                    </connections>
+                                </barButtonItem>
                             </items>
                         </toolbar>
                     </subviews>
@@ -61,15 +79,19 @@
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
                 <constraint firstItem="cMg-Cq-At2" firstAttribute="trailing" secondItem="fnl-2z-Ty3" secondAttribute="trailing" id="7UE-Ib-hGt"/>
-                <constraint firstAttribute="bottom" secondItem="cMg-Cq-At2" secondAttribute="bottom" constant="-5" id="nrD-BQ-HB5"/>
+                <constraint firstAttribute="bottom" secondItem="cMg-Cq-At2" secondAttribute="bottom" priority="749" constant="20" symbolic="YES" id="nrD-BQ-HB5"/>
+                <constraint firstAttribute="bottom" secondItem="cMg-Cq-At2" secondAttribute="bottom" constant="20" symbolic="YES" id="pTp-j6-Dcs"/>
                 <constraint firstItem="cMg-Cq-At2" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="ubk-rB-afy"/>
                 <constraint firstItem="cMg-Cq-At2" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="yXX-zu-zAR"/>
             </constraints>
-            <point key="canvasLocation" x="-1401" y="34"/>
+            <point key="canvasLocation" x="-2186" y="-685"/>
         </view>
     </objects>
     <resources>
-        <image name="chevron.backward" catalog="system" width="96" height="128"/>
+        <image name="list.dash" catalog="system" width="128" height="85"/>
+        <image name="location.fill" catalog="system" width="128" height="121"/>
+        <image name="rectangle.center.inset.fill" catalog="system" width="128" height="93"/>
+        <image name="stop.circle.fill" catalog="system" width="128" height="121"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

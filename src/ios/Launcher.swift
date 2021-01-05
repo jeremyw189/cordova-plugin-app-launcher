@@ -13,23 +13,21 @@
         let lat = parms.value(forKey: "gisLat") as! Double
         let long = parms.value(forKey: "gisLong") as! Double
         let tt = parms.value(forKey: "travelType") as! Int
-        let  location = ArcLocation( address: address, longitude: lat, latitude: long, route: RouteType(rawValue: tt) ?? RouteType.CAR)
-                        
-//      let toastController: UIAlertController =
-//        UIAlertController(
-//          title: "",
-//          message: address,
-//          preferredStyle: .alert
-//        )
+        let  location = ArcLocation( address: address, longitude: long, latitude: lat, route: RouteType(rawValue: tt) ?? RouteType.CAR)
         
-        let  mapCtrl = MapViewController(destination: location)
+        let  mapCtrl = NavigateRouteViewController(location:  location) // = MapViewController(destination: location)
     
+        //let transition = CATransition()
+        //transition.duration = 0.5
+        //transition.type = CATransitionType.push
+        //transition.subtype = CATransitionSubtype.fromRight
+        //transition.timingFunction =
+        //    CAMediaTimingFunction(name:CAMediaTimingFunctionName.easeInEaseOut)
+        // unable to get refeference to window.
+        //self.viewController.view.window!.layer.add(transition, forKey: kCATransition)
+        self.viewController?.present(mapCtrl, animated: true, completion: nil)
         
-      self.viewController?.present(
-        mapCtrl,
-        animated: true,
-        completion: nil
-      )
+    
 
 //      DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
 //        toastController.dismiss(
