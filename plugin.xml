@@ -35,6 +35,8 @@
 			<source-file src="src/ios/MapConstants.swift" />
 			<source-file src="src/ios/MapViewController.swift" />
 			<source-file src="src/ios/MapViewController.xib" />
+			<source-file src="src/ios/NavigateRouteViewController.swift" />
+			<source-file src="src/ios/NavigateRouteViewController.xib" />
 			<podspec>
 				<config>
 				</config>
