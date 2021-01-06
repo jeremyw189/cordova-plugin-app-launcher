@@ -6,11 +6,9 @@
 		version="0.4.1">
 
 	<name>Launcher</name>
-
 	<description>
 		This plugin allows you to see if other apps are installed and launch them. On Android, you can send extras to the launched Activity and receive result data (if available), as well as retrieve a list of applications that can open a specified uri.
 	</description>
-
 	<license>MIT</license>
 
 	<engines>
