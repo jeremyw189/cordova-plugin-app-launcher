@@ -1,4 +1,4 @@
-cordova-plugin-app-launcher
+cordova-plugin-map-launcher
 ===========================
 
 Simple Cordova plugin to see if other apps are installed and launch them.
