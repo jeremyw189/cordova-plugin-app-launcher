@@ -21,6 +21,25 @@ struct ArcLocation {
     var route: RouteType = RouteType.CAR
 }
 
+struct LakesSumterLanding {
+    // Y center point for the villages east of brownwood off of 44.
+    static let latitude = 28.82479334
+    // x
+    static let longitude = -81.98671583
+    // barns and knobles
+    static let lslLong = -81.976787349
+    static let lslLat =   28.908179615
+    
+    static let shooters_world = "Shooters World"
+    static let swLat = 28.849218843817695
+    static let swLong = -82.02131201965173
+    
+    // mvp -82.022588, 28.845312
+    static let   address = "Cane Garden Country club"
+    static let gisLong = -81.99463648
+    static let gisLat = 28.89330536
+}
+
 enum RouteType: Int {
     case CAR, GOLF_CART
 }
