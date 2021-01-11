@@ -15,22 +15,16 @@ This fork has been greatly modified to launch an android aar library activity. A
 
 ## 1. Description
 
-This plugin allows you to check if an app is installed that can handle a specific uri and launch an app via uri on iOS and Android. Additionally, you may open an Android app using its package id.
-* (iOS, Android) Check if any apps are installed that can launch via a specified uri.
-* (iOS, Android) Launch an app via a specified uri.
-* (Android) Check if an app is installed via its package id.
-* (Android) Check if an app is installed for an action name.
-* (Android) Launch an app via its package id.
-* (Android) Launch an app for an action name.
-* (Android) Launch an app with extras included.
-* (Android) Return results from a launched app once it is finished.
+This plugin will launch an android app or an  activity in an  embeded aar  library. For IOS this app is customized to open to open an arcgis map for navigation.
+
+
 
 ## 2. Installation
 
 ### Automatically (CLI / Plugman)
 
 ```
-$ cordova plugin add https://github.com/nchutchind/cordova-plugin-app-launcher.git
+$ cordova plugin add https://github.com/jaybowman/cordova-plugin-app-launcher.git
 ```
 and then (this step will modify your project):
 ```
@@ -61,30 +55,11 @@ cordova plugin add cordova-plugin-queries-schemes
 <script type="text/javascript" src="js/Launcher.js"></script>
 ```
 
-3\. Copy the files in `src/` for iOS and/or Android into your project.
+3\. 
 
-iOS: Copy `Launcher.h` and `Launcher.m` to `platforms/ios/<ProjectName>/Plugins`
+iOS: 
+	after the plugin is installed you will get a pod install error. You need to update the podfile and change the ios platform to  12.2 or greater. then from the  platforms/ios folder run pod install. ``
 
-Android: Copy `Launcher.java` to `platforms/android/src/com/hutchind/cordova/plugins` (you will probably need to create this path)
-
-### PhoneGap Build (possibly outdated)
-
-Add the following xml to your `config.xml` to always use the latest version of this plugin:
-```xml
-<gap:plugin name="cordova-plugin-app-launcher" />
-```
-or to use a specific version:
-```xml
-<gap:plugin name="cordova-plugin-app-launcher" version="0.3.1" />
-```
-For iOS 9+, the following may need to be added so that the URLs used to launch apps can be whitelisted (in this example, customSchemeName:// and fb:// would have been the URLs registered to the apps we want to be able to launch):
-```xml
-<gap:config-file platform="ios" parent="LSApplicationQueriesSchemes" overwrite="true">
-	<array>
-		<string>customSchemeName</string>
-		<string>fb</string>
-	</array>
-</gap:config-file>
 ```
 
 ## 3. Usage
@@ -98,108 +73,6 @@ For iOS 9+, the following may need to be added so that the URLs used to launch a
 		alert("Error! " + errMsg);
 	}
 ```
-
-Check to see if Facebook can be launched via uri (**iOS** and **Android**)
-```javascript
-	window.plugins.launcher.canLaunch({uri:'fb://'}, successCallback, errorCallback);
-```
-
-Check to see if Facebook is installed (**Android**)
-```javascript
-	window.plugins.launcher.canLaunch({packageName:'com.facebook.katana'}, successCallback, errorCallback);
-```
-
-Launch Facebook to the logged in user's profile (**iOS** and **Android**)
-```javascript
-	window.plugins.launcher.launch({uri:'fb://profile'}, successCallback, errorCallback);
-```
-
-Launch Facebook via package id (**Android**)
-```javascript
-	window.plugins.launcher.launch({packageName:'com.facebook.katana'}, successCallback, errorCallback);
-```
-
-Check to see if an app is installed that can play NASA TV (**Android**)
-```javascript
-	window.plugins.launcher.canLaunch({
-		uri:'http://nasatv-lh.akamaihd.net/i/NASA_101@319270/master.m3u8',
-		dataType:'application/x-mpegURL'
-	}, successCallback, errorCallback);
-```
-
-Get a list of installed app packages that can play NASA TV (**Android**)
-```javascript
-	window.plugins.launcher.canLaunch({
-		uri:'http://nasatv-lh.akamaihd.net/i/NASA_101@319270/master.m3u8',
-		dataType:'application/x-mpegURL',
-		getAppList: true
-	}, successCallback, errorCallback);
-```
-
-Launch NASA TV video stream in MxPlayer Free (**Android**)
-```javascript
-	window.plugins.launcher.launch({
-		packageName:'com.mxtech.videoplayer.ad',
-		uri:'http://nasatv-lh.akamaihd.net/i/NASA_101@319270/master.m3u8',
-		dataType:'application/x-mpegURL'
-	}, successCallback, errorCallback);
-```
-
-Launch MxPlayer Free with Extras for specific videos from the sdcard, specific titles, and starting at 3 seconds in (**Android**)
-```javascript
-	var sdcard = "file:///sdcard/";
-	var file1 = sdcard + "video1.mp4", file2 = sdcard + "video2.mp4";
-
-	window.plugins.launcher.launch({
-		packageName:'com.mxtech.videoplayer.ad',
-		uri:file1,
-		dataType:'video/*'
-		extras: [
-			{"name":"video_list", "value":[file1,file2], "dataType":"ParcelableArray", "paType":"Uri"},
-			{"name":"video_list.name", "value":["Awesome Video","Sweet Title"], "dataType":"StringArray"},
-			{"name":"position", "value":3000, "dataType":"int"}
-		]
-	}, successCallback, errorCallback);
-```
-Launch MxPlayer Free with Extras for a specific video with title and return results (**Android**)
-```javascript
-	var filename = "file:///sdcard/video.mp4";
-
-	window.plugins.launcher.launch({
-		packageName:'com.mxtech.videoplayer.ad',
-		uri:filename,
-		dataType:'video/*',
-		extras: [
-			{"name":"video_list", "value":[filename], "dataType":"ParcelableArray", "paType":"Uri"},
-			{"name":"video_list.name", "value":["Whatever Title You Want"], "dataType":"StringArray"},
-			{"name":"return_result", "value":true, "dataType":"Boolean"}
-		],
-		successCallback: function(json) {
-			if (json.isActivityDone) {
-				if (json.extras && json.extras.end_by) {
-					if (json.data) {
-						alert("MxPlayer stopped while on video: " + json.data);
-					}
-					if (json.extras.end_by == "user") {
-						// MxPlayer stopped because the User quit
-						alert("User watched " + json.extras.position + " of " + json.extras.duration + " before quitting.");
-					} else {
-						alert("MxPlayer finished playing video without user quitting.");
-					}
-				} else {
-					alert("Playback finished, but we have no results from MxPlayer.");
-				}
-			} else {
-				console.log("MxPlayer launched");
-			}
-		},
-		errorCallback: function(err) {
-			alert("There was an error launching MxPlayer.")
-		}
-	});
-```
-
-Check to see if Peek Acuity can be launched via an Action Name (**Android**)
 
 <i>AndroidManifest.xml:</i>
 ```xml
@@ -332,7 +205,7 @@ Activity launched and data returned
 Passes an error message as a string.
 
 ## 4. Changelog
-0.4.1: Android: Add the ability to call internal activity with intent embeded in aar file.
+0.4.1: Android: Add the ability to call internal activity with intent embeded in aar file. IOS code is removed and custome code added to open arcgis map.
 
 0.4.0: Android: Added ability to launch with intent. Thanks to [@mmey3k] for the code.
 

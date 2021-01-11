@@ -25,14 +25,12 @@
 				<feature name="Launcher">
 						<param name="ios-package" value="Launcher" />
 				</feature>
-			</config-file>
-			<!--header-file src="src/ios/Launcher.h" />
-			<source-file src="src/ios/Launcher.m" /-->
+			</config-file>		
 			<source-file src="src/ios/Launcher.swift" />
 			<source-file src="src/ios/AppPrivate.swift" />
 			<source-file src="src/ios/MapConstants.swift" />
-			<source-file src="src/ios/MapViewController.swift" />
-			<source-file src="src/ios/MapViewController.xib" />
+			<!-- source-file src="src/ios/MapViewController.swift" />
+			<source-file src="src/ios/MapViewController.xib" /-->
 			<source-file src="src/ios/NavigateRouteViewController.swift" />
 			<source-file src="src/ios/NavigateRouteViewController.xib" />
 			<source-file src="src/ios/DirectionsViewController.swift" />
