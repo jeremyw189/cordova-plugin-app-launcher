@@ -1,6 +1,6 @@
 cordova-plugin-map-launcher
 ===========================
-
+This Cordova plugin has major modification from [@nchutchind](https://github.com/nchutchind) version. Please use his version.
 Simple Cordova plugin to see if other apps are installed and launch them.
 This is a fork of Nicholas Hutchind's cordova-plugin-app-launcher.
 This fork has been greatly modified to launch an android aar library activity. Also extensive custom modification for IOS to launch ARCGIS map service.
@@ -55,12 +55,9 @@ cordova plugin add cordova-plugin-queries-schemes
 <script type="text/javascript" src="js/Launcher.js"></script>
 ```
 
-3\. 
+3\. iOS: 
+	After the plugin is installed you will get a pod install error. You need to update the podfile and change the ios platform to 12.2 or greater. Then from the  platforms/ios folder run pod install.
 
-iOS: 
-	after the plugin is installed you will get a pod install error. You need to update the podfile and change the ios platform to  12.2 or greater. then from the  platforms/ios folder run pod install. ``
-
-```
 
 ## 3. Usage
 ```javascript
