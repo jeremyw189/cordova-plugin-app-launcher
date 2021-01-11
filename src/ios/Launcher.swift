@@ -25,8 +25,9 @@
         //    CAMediaTimingFunction(name:CAMediaTimingFunctionName.easeInEaseOut)
         // unable to get refeference to window.
         //self.viewController.view.window!.layer.add(transition, forKey: kCATransition)
-        self.viewController?.present(mapCtrl, animated: true, completion: nil)
         
+        mapCtrl.modalPresentationStyle = .fullScreen
+        self.viewController?.present(mapCtrl, animated: true, completion: nil)        
     
 
 //      DispatchQueue.main.asyncAfter(deadline: .now() + 3) {

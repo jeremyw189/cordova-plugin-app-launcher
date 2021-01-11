@@ -19,9 +19,18 @@ class NavigateRouteViewController: UIViewController {
     @IBOutlet var recenterBarButtonItem: UIBarButtonItem!
     @IBOutlet var mapView: AGSMapView! {
         didSet {
-            //mapView.map = AGSMap(basemap: .openStreetMap())
+            
+            // this is now working
+            mapView.locationDisplay.dataSourceStatusChangedHandler = { [weak self] (change) in
+              // print("* * * locatin change event * * *")
+                guard let self = self else {return}
+                print("*** Location status change event.")
+                // no error set location as end point.
+                self.currentLocation = self.mapView.locationDisplay.mapLocation!
+                print(self.currentLocation ?? "location not set")
+            }
+            
             initMap()
-            //mapView.graphicsOverlays.add(makeRouteOverlay())
         }
     }
     
@@ -41,7 +50,7 @@ class NavigateRouteViewController: UIViewController {
        /// The initial location for the solved route.
        var initialLocation: AGSLocation!
        /// The graphic (with a dashed line symbol) to represent the route ahead.
-       let routeAheadGraphic = AGSGraphic(geometry: nil, symbol: AGSSimpleLineSymbol(style: .dash, color: .systemPurple, width: 5))
+       let routeAheadGraphic = AGSGraphic(geometry: nil, symbol: AGSSimpleLineSymbol(style: .solid, color: .systemRed, width: 3))
        /// The graphic to represent the route that's been traveled (initially empty).
        let routeTraveledGraphic = AGSGraphic(geometry: nil, symbol: AGSSimpleLineSymbol(style: .solid, color: .systemBlue, width: 3))
        /// A formatter to format a time value into human readable string.
@@ -66,8 +75,7 @@ class NavigateRouteViewController: UIViewController {
         } else {
             routeTask = .init(url: .golfRoutingService)
         }
-        //destination = AGSPoint(x: inputParams.longitude, y: inputParams.latitude, spatialReference: AGSSpatialReference.wgs84())
-        
+              
     }
         
     required init?(coder: NSCoder) {
@@ -103,8 +111,7 @@ class NavigateRouteViewController: UIViewController {
     }
     
     func setupLocationDisplay () {
-            
-        mapView.locationDisplay.autoPanMode = .compassNavigation
+        mapView.locationDisplay.autoPanMode = .navigation
         mapView.locationDisplay.wanderExtentFactor = 0.5
         
         mapView.locationDisplay.start(completion:) {[weak self] (error) in
@@ -115,26 +122,9 @@ class NavigateRouteViewController: UIViewController {
             }
             
             if self.mapView.locationDisplay.started {
-                self.currentLocation = self.mapView.locationDisplay.mapLocation!
-                
-                //self.mapView.graphicsOverlays.add(self.makeRouteOverlay())
                 print("Location display started.")
-               
-                //self.solveRoute()
             }
         }
-        
-        // I'm not getting this status change event.
-        mapView.locationDisplay.dataSourceStatusChangedHandler = { [weak self] (change) in
-            print("* * * locatin change event * * *")
-            guard let self = self else {return}
-            print("*** Location status change event.")
-            // no error set location as end point.
-            self.currentLocation = self.mapView.locationDisplay.mapLocation!
-           // self.mapView.graphicsOverlays.add(self.makeRouteOverlay())
-           // self.solveRoute()
-        }
-        
     }
     
     
@@ -165,15 +155,15 @@ class NavigateRouteViewController: UIViewController {
     ///
     /// - Returns: An array of `AGSStop` objects.
     func makeStops() -> [AGSStop] {
-        //let stop1 = AGSStop(point: AGSPoint(x: LakesSumterLanding.lslLong, y: LakesSumterLanding.lslLat, spatialReference: .wgs84()))
-        let stop1 = AGSStop(point: currentLocation)
-        stop1.name = "current gps location"
-        //let stop2 = AGSStop(point: AGSPoint(x: LakesSumterLanding.gisLong, y: LakesSumterLanding.gisLat, spatialReference: .wgs84()))
-        //stop2.name = "Cane garden country club"
-        //let stop3 = AGSStop(point: AGSPoint(x: LakesSumterLanding.swLong, y: LakesSumterLanding.swLat, spatialReference: .wgs84()))
-        let stop3 = AGSStop(point: AGSPoint( x: inputParams.longitude, y: inputParams.latitude, spatialReference: .wgs84()))
-        stop3.name = inputParams.address
-        return [stop1, stop3]
+        // default to sumter landing if we don't have a valid gps location.
+        let p1 =  AGSPoint(x: LakesSumterLanding.lslLong, y: LakesSumterLanding.lslLat, spatialReference: .wgs84())
+        let stop1 = AGSStop(point: currentLocation ?? p1)
+        stop1.name = "Starting location"
+       
+        let stop2 = AGSStop(point: AGSPoint( x: inputParams.longitude, y: inputParams.latitude, spatialReference: .wgs84()))
+        stop2.name = inputParams.address
+        
+        return [stop1, stop2]
     }
     
     /// Make the simulated data source for this demo.
@@ -185,6 +175,8 @@ class NavigateRouteViewController: UIViewController {
         // The mock data source to demo the navigation. Use delegate methods to update locations for the tracker.
         let mockDataSource = AGSSimulatedLocationDataSource()
         mockDataSource.setLocationsWith(densifiedRoute)
+        //mockDataSource.setLocationsWith(route.routeGeometry!)
+        
         mockDataSource.locationChangeHandlerDelegate = self
         return mockDataSource
     }
@@ -250,22 +242,25 @@ class NavigateRouteViewController: UIViewController {
                 }
                 // rerouting is enabled
                 self.setStatus(message: "Rerouting is enabled!")
+              
             }
         }
-        
-        // Set the mock location data source.
+              
         let firstRoute = routeResult.routes.first!
         directionsList = firstRoute.directionManeuvers
-        let mockDataSource = makeDataSource(route: firstRoute)
-        initialLocation = mockDataSource.locations?.first
-        // Create a route tracker location data source to snap the location display to the route.
-        let routeTrackerLocationDataSource = AGSRouteTrackerLocationDataSource(routeTracker: routeTracker, locationDataSource: mockDataSource)
         
-        // for production use system location data source
-        //let routeTrackerLocationDataSource = AGSRouteTrackerLocationDataSource(routeTracker: routeTracker, locationDataSource: mapView.locationDisplay.dataSource)
+        // Set the mock location data source.
+        //let mockDataSource = makeDataSource(route: firstRoute)
+        //initialLocation = mockDataSource.locations?.first       
+        //let routeTrackerLocationDataSource = AGSRouteTrackerLocationDataSource(routeTracker: routeTracker, locationDataSource: mockDataSource)
         
+        // MARK: For production use system location data source
+        let routeTrackerLocationDataSource = AGSRouteTrackerLocationDataSource(routeTracker: routeTracker, locationDataSource: mapView.locationDisplay.dataSource)
+        routeTrackerLocationDataSource.locationChangeHandlerDelegate = self
+              
         // Set location display.
         mapView.locationDisplay.dataSource = routeTrackerLocationDataSource
+        
         recenter()
         
         // Update graphics and viewpoint.
@@ -282,29 +277,44 @@ class NavigateRouteViewController: UIViewController {
     
     // MARK: Actions
     
-    @IBAction func startnavigation(_ sender: Any) {
-        solveRoute()
+    @IBAction func directionsButton(_ sender: Any) {
+        // show modal popup
+        var dirlist = [String]()
+        for item in directionsList {
+            dirlist.append(item.directionText )           
+        }
+        let listModalView = DirectionsViewController(directions: dirlist)
+        listModalView.modalPresentationStyle = .automatic
+        self.present(listModalView, animated: true, completion: nil)
         
+    }
+    @IBAction func navBarBackButton(_ sender: UIBarButtonItem) {
+        DispatchQueue.main.async {
+            self.dismiss(animated: true, completion: nil)
+        }
+    }
+    
+    @IBAction func startnavigation(_ sender: Any) {
+      
         navigationBarButtonItem.isEnabled = false
         resetBarButtonItem.isEnabled = true
         // Start the location data source and location display.
-        mapView.locationDisplay.start()
-    }
-    
-    @IBAction func reset(_ sender: Any) {
         mapView.locationDisplay.start(completion: ) { (error) in
             if let error = error {
                 print(error)
             }
         }
-        // reset()
+    }
+    
+    @IBAction func reset(_ sender: Any) {
+        reset()
     }
     
     func reset() {
          // Stop the speech, if there is any.
         speechSynthesizer.stopSpeaking(at: .immediate)
         // Reset to the starting location for location display.
-        mapView.locationDisplay.dataSource.didUpdate(initialLocation)
+        //mapView.locationDisplay.dataSource.didUpdate(initialLocation)
         // Stop the location display as well as datasource generation, if reset before the end is reached.
         mapView.locationDisplay.stop()
         mapView.locationDisplay.autoPanModeChangedHandler = nil
@@ -343,10 +353,21 @@ class NavigateRouteViewController: UIViewController {
         // Avoid the overlap between the status label and the map content.
         
         navTitle.title = inputParams.address
+        let navigationBarAppearance = UINavigationBar.appearance();
+        navigationBarAppearance.tintColor = UIColor.white
+        //navigationBarAppearance.barTintColor = UIColor(red: 0, green: 73, blue: 44, alpha: 0)
+        navigationBarAppearance.titleTextAttributes = [NSAttributedString.Key.foregroundColor:UIColor.white]
         
         mapView.contentInset.top = CGFloat(statusLabel.numberOfLines) * statusLabel.font.lineHeight
+               
+    }
+    override func viewDidAppear(_ animated: Bool) {
+              
+        print(self.currentLocation ?? "location not set view appearing")
         
-      
+        mapView.graphicsOverlays.add(makeRouteOverlay())
+        
+        solveRoute()
     }
     
     func solveRoute() {
@@ -438,14 +459,20 @@ extension NavigateRouteViewController: AGSRouteTrackerDelegate {
         routeTraveledGraphic.geometry = traversed
     }
     
+    func routeTrackerRerouteDidStart(_ routeTracker: AGSRouteTracker) {
+        print("Reroute started")
+    }
+           
     func routeTracker(_ routeTracker: AGSRouteTracker, rerouteDidCompleteWith trackingStatus: AGSTrackingStatus?, error: Error?) {
         if let error = error {
             print(error)
             return
         }
+
         // display updated to route graphics.
         let newRoutePolyline = trackingStatus?.routeResult.routes[0].routeGeometry
         // update the route ahead graphic with the new line.
+        setStatus(message: "Reroute completion event!")
         routeAheadGraphic.geometry = newRoutePolyline
     }
 }
@@ -453,6 +480,7 @@ extension NavigateRouteViewController: AGSRouteTrackerDelegate {
 // MARK: - AGSLocationChangeHandlerDelegate
 
 extension NavigateRouteViewController: AGSLocationChangeHandlerDelegate {
+    
     func locationDataSource(_ locationDataSource: AGSLocationDataSource, locationDidChange location: AGSLocation) {
         // Update the tracker location with the new location from the simulated data source.
         routeTracker?.trackLocation(location)

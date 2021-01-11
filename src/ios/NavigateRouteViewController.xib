@@ -34,41 +34,54 @@
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QPW-q8-TXz">
-                    <rect key="frame" x="0.0" y="818" width="414" height="44"/>
-                    <constraints>
-                        <constraint firstAttribute="height" constant="44" id="ynd-F1-yvN"/>
-                    </constraints>
-                    <items>
-                        <barButtonItem title="Navigate" id="cn9-l1-kOj" userLabel="Navigate">
-                            <connections>
-                                <action selector="startnavigation:" destination="-1" id="ocn-iJ-15B"/>
-                            </connections>
-                        </barButtonItem>
-                        <barButtonItem style="plain" systemItem="flexibleSpace" id="0BX-zX-RyO"/>
-                        <barButtonItem title="Recenter" id="vyd-gs-vv8">
-                            <connections>
-                                <action selector="recenter:" destination="-1" id="VS7-JP-cCC"/>
-                            </connections>
-                        </barButtonItem>
-                        <barButtonItem style="plain" systemItem="flexibleSpace" id="mQT-eD-QRu"/>
-                        <barButtonItem title="Stop" id="abe-qn-H2x">
-                            <connections>
-                                <action selector="reset:" destination="-1" id="tMA-wB-vXH"/>
-                            </connections>
-                        </barButtonItem>
-                    </items>
-                </toolbar>
                 <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0EY-ZU-ojy">
                     <rect key="frame" x="0.0" y="45" width="414" height="44"/>
+                    <color key="barTintColor" red="0.0" green="0.28535115719999998" blue="0.16981142760000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <items>
-                        <navigationItem title="Title" id="Bbb-DD-rLM"/>
+                        <navigationItem title="Title" id="Bbb-DD-rLM">
+                            <barButtonItem key="leftBarButtonItem" title="Back" image="chevron.backward" catalog="system" id="Piq-bC-ciV">
+                                <connections>
+                                    <action selector="navBarBackButton:" destination="-1" id="ER2-V8-cgs"/>
+                                </connections>
+                            </barButtonItem>
+                        </navigationItem>
                     </items>
                 </navigationBar>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="TKW-gf-Do5" customClass="AGSMapView">
                     <rect key="frame" x="0.0" y="142" width="414" height="676"/>
                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                 </view>
+                <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QPW-q8-TXz">
+                    <rect key="frame" x="0.0" y="818" width="414" height="44"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="44" id="ynd-F1-yvN"/>
+                    </constraints>
+                    <items>
+                        <barButtonItem title="Navigate" image="location.fill" catalog="system" id="cn9-l1-kOj" userLabel="Navigate">
+                            <connections>
+                                <action selector="startnavigation:" destination="-1" id="ocn-iJ-15B"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="0BX-zX-RyO"/>
+                        <barButtonItem title="Recenter" image="mappin.and.ellipse" catalog="system" id="vyd-gs-vv8">
+                            <connections>
+                                <action selector="recenter:" destination="-1" id="VS7-JP-cCC"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="mQT-eD-QRu"/>
+                        <barButtonItem title="Reset" image="arrow.2.circlepath.circle" catalog="system" id="abe-qn-H2x">
+                            <connections>
+                                <action selector="reset:" destination="-1" id="tMA-wB-vXH"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="k0G-El-fLx"/>
+                        <barButtonItem title="Directions" image="list.dash" catalog="system" id="RqX-k5-05s">
+                            <connections>
+                                <action selector="directionsButton:" destination="-1" id="34b-s7-Fz8"/>
+                            </connections>
+                        </barButtonItem>
+                    </items>
+                </toolbar>
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -93,6 +106,11 @@
         </view>
     </objects>
     <resources>
+        <image name="arrow.2.circlepath.circle" catalog="system" width="128" height="121"/>
+        <image name="chevron.backward" catalog="system" width="96" height="128"/>
+        <image name="list.dash" catalog="system" width="128" height="85"/>
+        <image name="location.fill" catalog="system" width="128" height="121"/>
+        <image name="mappin.and.ellipse" catalog="system" width="118" height="128"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
