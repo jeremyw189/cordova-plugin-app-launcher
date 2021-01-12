@@ -20,7 +20,7 @@ struct ArcLocation {
     var latitude: Double = 0
     var route: RouteType = RouteType.CAR
 }
-
+// locations for testing
 struct LakesSumterLanding {
     // Y center point for the villages east of brownwood off of 44.
     static let latitude = 28.82479334

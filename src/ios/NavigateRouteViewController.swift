@@ -460,19 +460,22 @@ extension NavigateRouteViewController: AGSRouteTrackerDelegate {
     }
     
     func routeTrackerRerouteDidStart(_ routeTracker: AGSRouteTracker) {
+        setStatus(message: "Reroute started event!")
         print("Reroute started")
     }
            
     func routeTracker(_ routeTracker: AGSRouteTracker, rerouteDidCompleteWith trackingStatus: AGSTrackingStatus?, error: Error?) {
+        setStatus(message: "Reroute completion event!")
         if let error = error {
             print(error)
             return
         }
 
+        directionsList = (trackingStatus?.routeResult.routes[0].routeGeometry.directionManeuvers)!
         // display updated to route graphics.
         let newRoutePolyline = trackingStatus?.routeResult.routes[0].routeGeometry
         // update the route ahead graphic with the new line.
-        setStatus(message: "Reroute completion event!")
+     
         routeAheadGraphic.geometry = newRoutePolyline
     }
 }
