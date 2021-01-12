@@ -9,12 +9,11 @@
 	<description>
 		This plugin allows you to see if other apps are installed and launch them. On Android, you can send extras to the launched Activity and receive result data (if available), as well as retrieve a list of applications that can open a specified uri.
 	</description>
+	<author>Jay Bowman</author>
 	<license>MIT</license>
-
 	<engines>
-			<engine name="cordova" version=">=3.0.0" />
+			<engine name="cordova" version=">=6.0.0" />
 	</engines>
-
 	<js-module src="www/Launcher.js" name="Launcher">
 			<clobbers target="plugins.launcher" />
 	</js-module>
@@ -29,8 +28,9 @@
 			<source-file src="src/ios/Launcher.swift" />
 			<source-file src="src/ios/AppPrivate.swift" />
 			<source-file src="src/ios/MapConstants.swift" />
-			<source-file src="src/ios/MapViewController.swift" />
-			<source-file src="src/ios/MapViewController.xib" >
+			<!-- map controler replaced by navigat route view controller 
+				<source-file src="src/ios/MapViewController.swift" />
+			<source-file src="src/ios/MapViewController.xib" /> -->
 			<source-file src="src/ios/NavigateRouteViewController.swift" />
 			<source-file src="src/ios/NavigateRouteViewController.xib" />
 			<source-file src="src/ios/DirectionsViewController.swift" />
