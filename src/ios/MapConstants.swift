@@ -20,8 +20,8 @@ struct ArcLocation {
     var latitude: Double = 0
     var route: RouteType = RouteType.CAR
 }
-// locations for testing
-struct LakesSumterLanding {
+
+struct TestPoints {
     // Y center point for the villages east of brownwood off of 44.
     static let latitude = 28.82479334
     // x
@@ -34,10 +34,14 @@ struct LakesSumterLanding {
     static let swLat = 28.849218843817695
     static let swLong = -82.02131201965173
     
-    // mvp -82.022588, 28.845312
+    
     static let   address = "Cane Garden Country club"
     static let gisLong = -81.99463648
     static let gisLat = 28.89330536
+    
+    // mvp brownwood -82.022588, 28.845312
+    static let mvp_y = 28.845312
+    static let mvp_x = -82.022588
 }
 
 enum RouteType: Int {

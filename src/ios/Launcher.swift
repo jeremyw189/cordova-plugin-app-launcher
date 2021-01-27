@@ -15,29 +15,12 @@
         let tt = parms.value(forKey: "travelType") as! Int
         let  location = ArcLocation( address: address, longitude: long, latitude: lat, route: RouteType(rawValue: tt) ?? RouteType.CAR)
         
-        let  mapCtrl = NavigateRouteViewController(location:  location) // = MapViewController(destination: location)
-    
-        //let transition = CATransition()
-        //transition.duration = 0.5
-        //transition.type = CATransitionType.push
-        //transition.subtype = CATransitionSubtype.fromRight
-        //transition.timingFunction =
-        //    CAMediaTimingFunction(name:CAMediaTimingFunctionName.easeInEaseOut)
-        // unable to get refeference to window.
-        //self.viewController.view.window!.layer.add(transition, forKey: kCATransition)
+        let  mapCtrl = NavigateRouteViewController(location: location) // = MapViewController(destination: location)          
         
         mapCtrl.modalPresentationStyle = .fullScreen
         self.viewController?.present(mapCtrl, animated: true, completion: nil)        
-    
-
-//      DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-//        toastController.dismiss(
-//          animated: true,
-//          completion: nil
-//        )
-//      }
       
-     pluginResult = CDVPluginResult( status: CDVCommandStatus_OK, messageAs: address    )
+        pluginResult = CDVPluginResult( status: CDVCommandStatus_OK, messageAs: address    )
         
     }
 
