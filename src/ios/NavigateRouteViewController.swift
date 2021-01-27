@@ -174,12 +174,12 @@ class NavigateRouteViewController: UIViewController  {
         let graphicsOverlay = AGSGraphicsOverlay()
         let stopSymbol = AGSSimpleMarkerSymbol(style: .diamond, color: .orange, size: 20)
               
-        let stopGraphics = makeStops().map { AGSGraphic(geometry: $0.geometry, symbol: stopSymbol) }
+        var stopGraphics = makeStops().map { AGSGraphic(geometry: $0.geometry, symbol: stopSymbol) }
         
         // TEST:  remove for production
-        //let testSymbol = AGSSimpleMarkerSymbol(style: .triangle, color: .purple, size: 20)
-        //let actualStopGraphics = makeSimulatedStops().map { AGSGraphic(geometry: $0.geometry, symbol: testSymbol) }
-        //stopGraphics.append(actualStopGraphics[1])
+        let testSymbol = AGSSimpleMarkerSymbol(style: .triangle, color: .purple, size: 20)
+        let actualStopGraphics = makeSimulatedStops().map { AGSGraphic(geometry: $0.geometry, symbol: testSymbol) }
+        stopGraphics.append(actualStopGraphics[1])
         
         let routeGraphics = [routeAheadGraphic, routeTraveledGraphic, actualRouteGraphic]
         
@@ -421,11 +421,11 @@ class NavigateRouteViewController: UIViewController  {
                     if let result = result {
                         self?.routeResult = result
                         // comment out for second route testing
-                        self?.setNavigation(with: result, parameters: params)
+                        //self?.setNavigation(with: result, parameters: params)
                         self?.navigationBarButtonItem.isEnabled = true
                         //
                         // Test rerouting using 2 routes. ssolve the second route.
-                        /*
+                        //
                         self?.routeTask.defaultRouteParameters { [weak self] (params: AGSRouteParameters?, error: Error?) in
                             guard let self = self else { return }
                             if let params = params {
@@ -453,7 +453,7 @@ class NavigateRouteViewController: UIViewController  {
                                 self.setStatus(message: "Failed to get route parameters for test route.")
                             }
                         }
-                        */
+                        
                         
                     } else if let error = error {
                         self?.presentAlert(error: error)
