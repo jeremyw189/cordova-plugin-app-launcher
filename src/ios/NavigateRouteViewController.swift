@@ -13,9 +13,10 @@ class NavigateRouteViewController: UIViewController  {
     private var inputParams: ArcLocation = ArcLocation()
        
     @IBOutlet var navTitle: UINavigationItem!
-    @IBOutlet var statusLabel: UILabel!
+    @IBOutlet var directionLabel: UILabel!
+    @IBOutlet var directionImage: UIImageView!
+    @IBOutlet var distanceLabel: UILabel!    
     @IBOutlet var navigationBarButtonItem: UIBarButtonItem!
-    @IBOutlet var resetBarButtonItem: UIBarButtonItem!
     @IBOutlet var recenterBarButtonItem: UIBarButtonItem!
     @IBOutlet var mapView: AGSMapView! {
         didSet {
@@ -30,7 +31,9 @@ class NavigateRouteViewController: UIViewController  {
                 print(self.currentLocation ?? "location not set")
             }
             
-            initMap()
+            mapView.map = AGSMap(basemap: .openStreetMap() )
+            mapView.graphicsOverlays.add(makeRouteOverlay())
+            //initMap()
         }
     }
     
@@ -131,8 +134,7 @@ class NavigateRouteViewController: UIViewController  {
             }
         }
     }
-      
-    
+          
     func presentAlert(error: Error){
         let alert = UIAlertController( title: "Error", message: error.localizedDescription, preferredStyle: .alert)
         let dismiss = UIAlertAction (title: "Dismiss", style: .default, handler: nil)
@@ -146,8 +148,8 @@ class NavigateRouteViewController: UIViewController  {
     func makeStops() -> [AGSStop] {
         // default to sumter landing if we don't have a valid gps location.
         let p1 =  AGSPoint(x: TestPoints.mvp_x, y: TestPoints.mvp_y, spatialReference: .wgs84())
-        let stop1 = AGSStop(point: currentLocation ?? p1)
-        //let stop1 = AGSStop(point: p1)
+        //let stop1 = AGSStop(point: currentLocation ?? p1)
+        let stop1 = AGSStop(point: p1)
         stop1.name = "Starting location"
        
         let stop2 = AGSStop(point: AGSPoint( x: inputParams.longitude, y: inputParams.latitude, spatialReference: .wgs84()))
@@ -242,7 +244,7 @@ class NavigateRouteViewController: UIViewController  {
                      
         // Set location display data source.
         mapView.locationDisplay.dataSource = routeTrackerLocationDataSource
-        routeTrackerLocationDataSource.locationChangeHandlerDelegate = self
+       
        
         recenter()
         
@@ -288,8 +290,7 @@ class NavigateRouteViewController: UIViewController  {
                      
         // Set location display data source.
         mapView.locationDisplay.dataSource = routeTrackerLocationDataSource
-        routeTrackerLocationDataSource.locationChangeHandlerDelegate = self
-        
+              
         recenter()
         
         // Update graphics and viewpoint.
@@ -302,7 +303,7 @@ class NavigateRouteViewController: UIViewController  {
     // MARK: UI
     
     func setStatus(message: String) {
-        statusLabel.text = message
+        directionLabel.text = message
     }
     
     // MARK: Actions
@@ -326,8 +327,13 @@ class NavigateRouteViewController: UIViewController  {
     
     @IBAction func startnavigation(_ sender: Any) {
       
-        navigationBarButtonItem.isEnabled = false
-        resetBarButtonItem.isEnabled = true
+        navigationBarButtonItem.image = UIImage(systemName: "stop.fill")
+        
+        if mapView.locationDisplay.started {
+            reset()
+            return
+        }
+                  
         // Start the location data source and location display.
         mapView.locationDisplay.start(completion: ) { (error) in
             if let error = error {
@@ -336,10 +342,7 @@ class NavigateRouteViewController: UIViewController  {
         }
     }
     
-    @IBAction func reset(_ sender: Any) {
-        reset()
-    }
-    
+       
     func reset() {
          // Stop the speech, if there is any.
         speechSynthesizer.stopSpeaking(at: .immediate)
@@ -354,9 +357,8 @@ class NavigateRouteViewController: UIViewController  {
         
         // Reset the navigation.
         setNavigation(with: routeResult, parameters: routeParameters)
-        // Reset buttons state.
-        resetBarButtonItem.isEnabled = false
-        navigationBarButtonItem.isEnabled = true
+        // toggle  buttons image.
+        navigationBarButtonItem.image = UIImage(systemName: "location.fill")
     }
     
     @IBAction func recenter(_ sender: UIBarButtonItem) {
@@ -388,7 +390,7 @@ class NavigateRouteViewController: UIViewController  {
         //navigationBarAppearance.barTintColor = UIColor(red: 0, green: 73, blue: 44, alpha: 0)
         navigationBarAppearance.titleTextAttributes = [NSAttributedString.Key.foregroundColor:UIColor.white]
         
-        mapView.contentInset.top = CGFloat(statusLabel.numberOfLines) * statusLabel.font.lineHeight
+        mapView.contentInset.top = CGFloat(directionLabel.numberOfLines) * directionLabel.font.lineHeight
                
     }
     override func viewDidAppear(_ animated: Bool) {
@@ -421,7 +423,7 @@ class NavigateRouteViewController: UIViewController  {
                     if let result = result {
                         self?.routeResult = result
                         // comment out for second route testing
-                        //self?.setNavigation(with: result, parameters: params)
+                        // self?.setNavigation(with: result, parameters: params)
                         self?.navigationBarButtonItem.isEnabled = true
                         //
                         // Test rerouting using 2 routes. ssolve the second route.
@@ -489,19 +491,47 @@ class NavigateRouteViewController: UIViewController  {
         }
     }
   
+    func getDirectionImage(direction: String) -> UIImage {
+        var imgName = "square"
+        if direction.contains("Turn left") {
+            imgName = "arrow.turn.up.left"
+        }
+        else  if direction.contains("Turn right") {
+            imgName = "arrow.turn.up.right"
+        }
+        else  if direction.contains("Bear left") {
+            imgName = "arrow.up.left"
+        }
+        else  if direction.contains("Bear right") {
+            imgName = "arrow.up.right"
+        }
+        else  if direction.contains("Continue") {
+            imgName = "arrow.up"
+        }
+        else  if direction.contains("U-turn") {
+            imgName = "arrow.uturn.down"
+        }
+        else  if direction.contains("Go north") {
+            imgName = "arrow.up"
+        }
+        else  if direction.contains("Go east") {
+            imgName = "arrow.right"
+        }
+        else  if direction.contains("Sharp Left") {
+            imgName = "arrow.left"
+        }
+        else if direction.contains("Finish") {
+            imgName = "flag"
+        }
+        
+        return UIImage(systemName: imgName)!
+    }
     
 }
 
 // MARK: - AGSRouteTrackerDelegate
 
-extension NavigateRouteViewController: AGSRouteTrackerDelegate, AGSLocationChangeHandlerDelegate {
-    
-    func locationDataSource(_ locationDataSource: AGSLocationDataSource, locationDidChange location: AGSLocation) {
-        routeTracker.trackLocation(location, completion: {(error) in
-            print(error ?? "error on location change event.")
-        })
-    }
-    
+extension NavigateRouteViewController: AGSRouteTrackerDelegate {
     
     func routeTracker(_ routeTracker: AGSRouteTracker, didGenerateNewVoiceGuidance voiceGuidance: AGSVoiceGuidance) {
         setSpeakDirection(with: voiceGuidance.text)
@@ -517,17 +547,20 @@ extension NavigateRouteViewController: AGSRouteTrackerDelegate, AGSLocationChang
     }
     
     func updateTrackingStatusDisplay(routeTracker: AGSRouteTracker, status: AGSTrackingStatus) {
-        var statusText: String
+        var statusText = ""
+        var distanceText = ""
+        
         switch status.destinationStatus {
         case .notReached, .approaching:
             let distanceRemaining = status.routeProgress.remainingDistance.displayText + " " + status.routeProgress.remainingDistance.displayTextUnits.abbreviation
-            //let timeRemaining = timeFormatter.string(from: TimeInterval(status.routeProgress.remainingTime * 60))!
-            statusText = """
-            Distance remaining: \(distanceRemaining)
+            let timeRemaining = timeFormatter.string(from: TimeInterval(status.routeProgress.remainingTime * 60))!
+            
+            distanceText = """
+            Distance: \(distanceRemaining)   \(timeRemaining)
             """
             if status.currentManeuverIndex + 1 < directionsList.count {
                 let nextDirection = directionsList[status.currentManeuverIndex + 1].directionText
-                statusText.append("\nNext direction: \(nextDirection)")
+                statusText = "\(nextDirection)"
             }
         case .reached:
             if status.remainingDestinationCount > 1 {
@@ -542,6 +575,8 @@ extension NavigateRouteViewController: AGSRouteTrackerDelegate, AGSLocationChang
         }
         updateRouteGraphics(remaining: status.routeProgress.remainingGeometry, traversed: status.routeProgress.traversedGeometry)
         setStatus(message: statusText)
+        distanceLabel.text = distanceText
+        directionImage.image = getDirectionImage(direction: statusText)
     }
     
     func updateRouteGraphics(remaining: AGSGeometry?, traversed: AGSGeometry? = nil) {
@@ -559,13 +594,14 @@ extension NavigateRouteViewController: AGSRouteTrackerDelegate, AGSLocationChang
         setStatus(message: "Reroute completion event!")
         if let error = error {
             print(error)
-            return
-        }
+           
+        } else if let status = trackingStatus {
 
-        directionsList = (trackingStatus?.routeResult.routes.first!.directionManeuvers)!
-        // display updated to route graphics.
-        //let newRoutePolyline = trackingStatus?.routeResult.routes[0].routeGeometry
-        // update the route ahead graphic with the new line.
-        //routeAheadGraphic.geometry = newRoutePolyline
+            directionsList = (trackingStatus?.routeResult.routes.first!.directionManeuvers)!
+            // display updated to route graphics.
+            //let newRoutePolyline = trackingStatus?.routeResult.routes[0].routeGeometry
+            // update the route ahead graphic with the new line.
+            //routeAheadGraphic.geometry = newRoutePolyline
+        }
     }
 }
