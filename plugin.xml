@@ -39,7 +39,7 @@
 				<config>
 				</config>
 				<pods use-frameworks="true">
-					<pod name="ArcGIS-Runtime-SDK-iOS"  spec="100.9" />
+					<pod name="ArcGIS-Runtime-SDK-iOS"  spec="100.10" />
 				</pods>
 			</podspec>
 	</platform>

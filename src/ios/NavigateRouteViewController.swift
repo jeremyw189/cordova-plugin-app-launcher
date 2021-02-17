@@ -29,11 +29,14 @@ class NavigateRouteViewController: UIViewController  {
                 // no error set location as end point.
                 self.currentLocation = self.mapView.locationDisplay.mapLocation!
                 print(self.currentLocation ?? "location not set")
+                                
             }
             
-            mapView.map = AGSMap(basemap: .openStreetMap() )
-            mapView.graphicsOverlays.add(makeRouteOverlay())
-            //initMap()
+            //mapView.map = AGSMap(basemap:  .openStreetMap())
+            //mapView.graphicsOverlays.add(makeRouteOverlay())
+            
+            // use the villages map server
+            initMap()
         }
     }
     
@@ -41,7 +44,7 @@ class NavigateRouteViewController: UIViewController  {
        /// Current location from mapview locationdisplay
        var currentLocation: AGSPoint!
        /// The route task to solve the route between stops, using the online routing service.
-       var routeTask = AGSRouteTask(url: .carRoutingService)
+       var routeTask = AGSRouteTask(url: .myAppRoutingService)
        /// The route result solved by the route task.
        var routeResult: AGSRouteResult!
        /// The route tracker for navigation. Use delegate methods to update tracking status.
@@ -75,6 +78,9 @@ class NavigateRouteViewController: UIViewController  {
     init (location: ArcLocation){
         super.init(nibName: nil, bundle: nil)
         licenseApplication()
+        AGSRequestConfiguration.global().debugLogRequests = true
+        let documentURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        AGSRequestConfiguration.global().debugLogFileURL = URL(fileURLWithPath: "debug.md", relativeTo: documentURL)
         
         inputParams = location
         if inputParams.route == RouteType.CAR {
@@ -148,8 +154,8 @@ class NavigateRouteViewController: UIViewController  {
     func makeStops() -> [AGSStop] {
         // default to sumter landing if we don't have a valid gps location.
         let p1 =  AGSPoint(x: TestPoints.mvp_x, y: TestPoints.mvp_y, spatialReference: .wgs84())
-        //let stop1 = AGSStop(point: currentLocation ?? p1)
-        let stop1 = AGSStop(point: p1)
+        let stop1 = AGSStop(point: self.currentLocation ?? p1)
+        //let stop1 = AGSStop(point: p1)
         stop1.name = "Starting location"
        
         let stop2 = AGSStop(point: AGSPoint( x: inputParams.longitude, y: inputParams.latitude, spatialReference: .wgs84()))
@@ -160,7 +166,8 @@ class NavigateRouteViewController: UIViewController  {
     
     func makeSimulatedStops() -> [AGSStop] {
         let p1 = AGSPoint(x: TestPoints.mvp_x, y: TestPoints.mvp_y, spatialReference: .wgs84())
-        let start = AGSStop(point: p1)
+        //let start = AGSStop(point: p1)
+        let start = AGSStop(point: currentLocation ?? p1)
         start.name = "Current location"
         let final = AGSStop(point: AGSPoint(x: TestPoints.swLong, y: TestPoints.swLat, spatialReference: .wgs84()))
         final.name = "Shooters world"
@@ -217,7 +224,7 @@ class NavigateRouteViewController: UIViewController  {
         
         // add rerouteing
         if  routeTask.routeTaskInfo().supportsRerouting {
-            routeTracker.enableRerouting(with: self.routeTask, routeParameters: parameters, strategy: AGSReroutingStrategy.toNextWaypoint, visitFirstStopOnStart: false)
+            routeTracker.enableRerouting(with: self.routeTask, routeParameters: parameters, strategy: AGSReroutingStrategy.toNextStop, visitFirstStopOnStart: false)
             { (error) in
                 if let error = error {
                     print(error)
@@ -233,19 +240,18 @@ class NavigateRouteViewController: UIViewController  {
         directionsList = firstRoute.directionManeuvers
         
         //TESTING: Set the mock simulsted location data source for testing.
-        let densifiedRoute = AGSGeometryEngine.geodeticDensifyGeometry(firstRoute.routeGeometry!, maxSegmentLength: 60.0, lengthUnit: .meters(), curveType: .geodesic) as! AGSPolyline
-        let mockDataSource = AGSSimulatedLocationDataSource()
-        mockDataSource.setLocationsWith(densifiedRoute)
-        initialLocation = mockDataSource.locations?.first
-        let routeTrackerLocationDataSource = AGSRouteTrackerLocationDataSource(routeTracker: routeTracker, locationDataSource: mockDataSource)
+        //let densifiedRoute = AGSGeometryEngine.geodeticDensifyGeometry(firstRoute.routeGeometry!, maxSegmentLength: 60.0, lengthUnit: .meters(), curveType: .geodesic) as! AGSPolyline
+        //let mockDataSource = AGSSimulatedLocationDataSource()
+        //mockDataSource.setLocationsWith(densifiedRoute)
+        //initialLocation = mockDataSource.locations?.first
+        //let routeTrackerLocationDataSource = AGSRouteTrackerLocationDataSource(routeTracker: routeTracker, locationDataSource: mockDataSource)
         
         // MARK: For production use system location data source
-        //let routeTrackerLocationDataSource = AGSRouteTrackerLocationDataSource(routeTracker: routeTracker, locationDataSource: mapView.locationDisplay.dataSource)
+        let routeTrackerLocationDataSource = AGSRouteTrackerLocationDataSource(routeTracker: routeTracker)
                      
         // Set location display data source.
         mapView.locationDisplay.dataSource = routeTrackerLocationDataSource
-       
-       
+        
         recenter()
         
         // Update graphics and viewpoint.
@@ -270,9 +276,13 @@ class NavigateRouteViewController: UIViewController  {
                     return
                 }
                 // rerouting is enabled
+                print( "*** Rerouting is enabled!")
                 self.setStatus(message: "Rerouting is enabled!")
               
             }
+        }
+        else {
+            print ("*** REROUTING IS NOT SUPPORTED ***")
         }
               
         let firstRoute = secondRouteResult.routes.first!
@@ -283,14 +293,12 @@ class NavigateRouteViewController: UIViewController  {
         let mockDataSource = AGSSimulatedLocationDataSource()
         mockDataSource.setLocationsWith(densifiedRoute)
         //initialLocation = mockDataSource.locations?.first
-        let routeTrackerLocationDataSource = AGSRouteTrackerLocationDataSource(routeTracker: routeTracker, locationDataSource: mockDataSource)
-        
-        // MARK: For production use system location data source
-        //let routeTrackerLocationDataSource = AGSRouteTrackerLocationDataSource(routeTracker: routeTracker, locationDataSource: mapView.locationDisplay.dataSource)
-                     
+        let routeTrackerLocationDataSource = RouteTrackerDisplayLocationDataSource(routeTracker: routeTracker, locationDataSource: mockDataSource)
+        mockDataSource.locationChangeHandlerDelegate = self
+                
         // Set location display data source.
         mapView.locationDisplay.dataSource = routeTrackerLocationDataSource
-              
+        
         recenter()
         
         // Update graphics and viewpoint.
@@ -423,11 +431,12 @@ class NavigateRouteViewController: UIViewController  {
                     if let result = result {
                         self?.routeResult = result
                         // comment out for second route testing
-                        // self?.setNavigation(with: result, parameters: params)
+                        //self?.setNavigation(with: result, parameters: params)
                         self?.navigationBarButtonItem.isEnabled = true
                         //
                         // Test rerouting using 2 routes. ssolve the second route.
                         //
+                        
                         self?.routeTask.defaultRouteParameters { [weak self] (params: AGSRouteParameters?, error: Error?) in
                             guard let self = self else { return }
                             if let params = params {
@@ -533,6 +542,8 @@ class NavigateRouteViewController: UIViewController  {
 
 extension NavigateRouteViewController: AGSRouteTrackerDelegate {
     
+    
+    
     func routeTracker(_ routeTracker: AGSRouteTracker, didGenerateNewVoiceGuidance voiceGuidance: AGSVoiceGuidance) {
         setSpeakDirection(with: voiceGuidance.text)
     }
@@ -583,25 +594,40 @@ extension NavigateRouteViewController: AGSRouteTrackerDelegate {
         routeAheadGraphic.geometry = remaining
         routeTraveledGraphic.geometry = traversed
     }
-        
     
     func routeTrackerRerouteDidStart(_ routeTracker: AGSRouteTracker) {
         setStatus(message: "Reroute started event!")
         print("Reroute started")
     }
-           
+    
     func routeTracker(_ routeTracker: AGSRouteTracker, rerouteDidCompleteWith trackingStatus: AGSTrackingStatus?, error: Error?) {
         setStatus(message: "Reroute completion event!")
+        print ("*** Reroute completed ***")
         if let error = error {
             print(error)
-           
+
         } else if let status = trackingStatus {
 
-            directionsList = (trackingStatus?.routeResult.routes.first!.directionManeuvers)!
+            directionsList = status.routeResult.routes.first!.directionManeuvers
             // display updated to route graphics.
             //let newRoutePolyline = trackingStatus?.routeResult.routes[0].routeGeometry
             // update the route ahead graphic with the new line.
             //routeAheadGraphic.geometry = newRoutePolyline
+        }
+    }
+}
+
+// MARK: - AGSLocationChangeHandlerDelegate
+
+extension NavigateRouteViewController: AGSLocationChangeHandlerDelegate {
+    func locationDataSource(_ locationDataSource: AGSLocationDataSource, locationDidChange location: AGSLocation) {
+        // Update the tracker location with the new location from the simulated data source.
+        routeTracker?.trackLocation(location) { [weak self] error in
+            guard let self = self else { return }
+            if let error = error {
+                self.setStatus(message: error.localizedDescription)
+                self.routeTracker.delegate = nil
+            }
         }
     }
 }

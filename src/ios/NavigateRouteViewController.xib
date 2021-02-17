@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <device id="retina6_5" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="Stack View standard spacing" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -26,49 +27,9 @@
             <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0EY-ZU-ojy">
-                    <rect key="frame" x="0.0" y="45" width="423" height="44"/>
-                    <color key="barTintColor" red="0.0" green="0.28535115719999998" blue="0.16981142760000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                    <items>
-                        <navigationItem title="Title" id="Bbb-DD-rLM">
-                            <barButtonItem key="leftBarButtonItem" title="Back" image="chevron.left" catalog="system" id="Piq-bC-ciV">
-                                <connections>
-                                    <action selector="navBarBackButton:" destination="-1" id="ER2-V8-cgs"/>
-                                </connections>
-                            </barButtonItem>
-                        </navigationItem>
-                    </items>
-                </navigationBar>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hSH-SA-xya">
-                    <rect key="frame" x="0.0" y="771" width="414" height="31"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                    <nil key="textColor"/>
-                    <nil key="highlightedColor"/>
-                </label>
-                <stackView opaque="NO" contentMode="scaleToFill" spacing="184" translatesAutoresizingMaskIntoConstraints="NO" id="8Jk-1C-Ghs">
-                    <rect key="frame" x="0.0" y="89" width="414" height="61"/>
-                    <subviews>
-                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ZOA-66-EXq">
-                            <rect key="frame" x="0.0" y="0.0" width="210.5" height="61"/>
-                        </imageView>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="23" translatesAutoresizingMaskIntoConstraints="NO" id="LDR-KC-lQ4">
-                            <rect key="frame" x="394.5" y="0.0" width="19.5" height="61"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                            <nil key="textColor"/>
-                            <nil key="highlightedColor"/>
-                        </label>
-                    </subviews>
-                    <viewLayoutGuide key="safeArea" id="dMI-GG-vMC"/>
-                </stackView>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="TKW-gf-Do5" customClass="AGSMapView">
-                    <rect key="frame" x="0.0" y="158" width="414" height="621"/>
-                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                </view>
-                <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QPW-q8-TXz">
-                    <rect key="frame" x="-9" y="802" width="414" height="44"/>
-                    <constraints>
-                        <constraint firstAttribute="height" constant="44" id="V6V-5A-5IZ"/>
-                    </constraints>
+                <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="bottom" id="QPW-q8-TXz">
+                    <rect key="frame" x="0.0" y="278" width="414" height="584"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                     <items>
                         <barButtonItem title="Recenter" image="mappin.and.ellipse" catalog="system" id="vyd-gs-vv8">
                             <connections>
@@ -89,31 +50,55 @@
                         </barButtonItem>
                     </items>
                 </toolbar>
+                <navigationBar contentMode="scaleToFill" id="0EY-ZU-ojy">
+                    <rect key="frame" x="0.0" y="30" width="414" height="44"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                    <color key="barTintColor" red="0.0" green="0.28535115719999998" blue="0.16981142760000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <items>
+                        <navigationItem title="Title" id="Bbb-DD-rLM">
+                            <barButtonItem key="leftBarButtonItem" title="Back" image="chevron.left" catalog="system" id="Piq-bC-ciV">
+                                <connections>
+                                    <action selector="navBarBackButton:" destination="-1" id="ER2-V8-cgs"/>
+                                </connections>
+                            </barButtonItem>
+                        </navigationItem>
+                    </items>
+                </navigationBar>
+                <stackView opaque="NO" contentMode="left" spacingType="standard" id="8Jk-1C-Ghs">
+                    <rect key="frame" x="0.0" y="75" width="414" height="69"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                    <subviews>
+                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ZOA-66-EXq">
+                            <rect key="frame" x="0.0" y="0.0" width="199" height="69"/>
+                            <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="17" scale="default"/>
+                        </imageView>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label next direction" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="LDR-KC-lQ4">
+                            <rect key="frame" x="207" y="0.0" width="207" height="69"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <viewLayoutGuide key="safeArea" id="dMI-GG-vMC"/>
+                </stackView>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="hSH-SA-xya">
+                    <rect key="frame" x="186" y="413" width="41" height="69"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <view contentMode="scaleToFill" id="TKW-gf-Do5" customClass="AGSMapView">
+                    <rect key="frame" x="0.0" y="144" width="414" height="666"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                    <viewLayoutGuide key="safeArea" id="YcW-Oz-06k"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                </view>
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-            <constraints>
-                <constraint firstItem="TKW-gf-Do5" firstAttribute="trailing" secondItem="hSH-SA-xya" secondAttribute="trailing" id="2ON-WI-mSj"/>
-                <constraint firstItem="TKW-gf-Do5" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="6co-8b-mxu"/>
-                <constraint firstItem="TKW-gf-Do5" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="158" id="DLf-NI-E4r"/>
-                <constraint firstItem="hSH-SA-xya" firstAttribute="top" secondItem="TKW-gf-Do5" secondAttribute="bottom" constant="8" id="Fib-KR-e0V"/>
-                <constraint firstItem="QPW-q8-TXz" firstAttribute="top" secondItem="hSH-SA-xya" secondAttribute="bottom" id="L6w-9F-tmR"/>
-                <constraint firstItem="TKW-gf-Do5" firstAttribute="top" secondItem="8Jk-1C-Ghs" secondAttribute="bottom" constant="8" id="Pxv-8l-ZDr"/>
-                <constraint firstItem="0EY-ZU-ojy" firstAttribute="leading" secondItem="8Jk-1C-Ghs" secondAttribute="leading" id="RL4-Lg-Lrq"/>
-                <constraint firstItem="TKW-gf-Do5" firstAttribute="leading" secondItem="QPW-q8-TXz" secondAttribute="leading" id="Zd6-SV-dSn"/>
-                <constraint firstItem="TKW-gf-Do5" firstAttribute="trailing" secondItem="hSH-SA-xya" secondAttribute="trailing" id="bfM-Te-h0b"/>
-                <constraint firstItem="0EY-ZU-ojy" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" constant="1" id="cRU-jN-Jqa"/>
-                <constraint firstAttribute="trailing" secondItem="0EY-ZU-ojy" secondAttribute="trailing" constant="-9" id="dKG-Hi-Oqu"/>
-                <constraint firstItem="TKW-gf-Do5" firstAttribute="leading" secondItem="8Jk-1C-Ghs" secondAttribute="leading" id="dvI-14-KlC"/>
-                <constraint firstItem="QPW-q8-TXz" firstAttribute="bottom" secondItem="fnl-2z-Ty3" secondAttribute="bottom" id="fY4-t1-frE"/>
-                <constraint firstItem="QPW-q8-TXz" firstAttribute="trailing" secondItem="hSH-SA-xya" secondAttribute="trailing" id="lhW-5x-CL5"/>
-                <constraint firstItem="TKW-gf-Do5" firstAttribute="leading" secondItem="hSH-SA-xya" secondAttribute="leading" id="mBh-Q2-DRQ"/>
-                <constraint firstItem="TKW-gf-Do5" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="vmt-hK-xTL"/>
-                <constraint firstItem="TKW-gf-Do5" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="wdM-UC-tuX"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="8Jk-1C-Ghs" secondAttribute="trailing" id="yNp-n7-Efn"/>
-                <constraint firstAttribute="bottom" secondItem="TKW-gf-Do5" secondAttribute="bottom" constant="117" id="zsu-O4-GsW"/>
-            </constraints>
-            <point key="canvasLocation" x="-362.31884057971018" y="48.883928571428569"/>
+            <point key="canvasLocation" x="-433.33333333333337" y="45.535714285714285"/>
         </view>
     </objects>
     <resources>
