@@ -77,7 +77,7 @@
                 <constraint firstItem="8mt-cI-7BW" firstAttribute="trailing" secondItem="vUN-kp-3ea" secondAttribute="trailing" id="URu-5C-btz"/>
                 <constraint firstItem="8mt-cI-7BW" firstAttribute="bottom" secondItem="vUN-kp-3ea" secondAttribute="bottom" id="Zag-gr-3bA"/>
             </constraints>
-            <point key="canvasLocation" x="-33.333333333333336" y="69.642857142857139"/>
+            <point key="canvasLocation" x="136" y="-56"/>
         </view>
     </objects>
     <resources>
